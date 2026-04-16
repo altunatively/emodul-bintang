@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Modul BINTANG</title>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        rose:    { 50:'#fff0f5', 100:'#ffd6e7', 200:'#ffadd0', 300:'#ff80b8', 400:'#f75d9e', 500:'#e0447f', 600:'#c43068', 700:'#a01e52', 800:'#7e1040', 900:'#5c0630' },
+        peach:   { 50:'#fff7f0', 100:'#ffe8d5', 200:'#ffc9a0', 300:'#ffa96b', 400:'#f98540', 500:'#e56520', 600:'#c34d10', 700:'#9e3808', 800:'#7a2804', 900:'#561a02' },
+        mint:    { 50:'#f0fdf8', 100:'#d0f5e8', 200:'#a2ebd3', 300:'#6dddb8', 400:'#3dc99a', 500:'#1fae7e', 600:'#0e8e63', 700:'#096e4b', 800:'#065136', 900:'#033323' },
+        sky:     { 50:'#f0f8ff', 100:'#d5eeff', 200:'#a8d9ff', 300:'#72c1ff', 400:'#44a5ff', 500:'#2089f0', 600:'#1069cc', 700:'#084da6', 800:'#053682', 900:'#02205e' },
+        lavender:{ 50:'#f5f0ff', 100:'#e8d9ff', 200:'#d0b2ff', 300:'#b685ff', 400:'#9d5df5', 500:'#8440e0', 600:'#6a28c0', 700:'#521a9e', 800:'#3d0f7c', 900:'#290758' },
+        cream:   { 50:'#fffdf5', 100:'#fff9e5', 200:'#fff0c0', 300:'#ffe58a', 400:'#ffd44d', 500:'#f5c020', 600:'#d4990a', 700:'#a87304', 800:'#7d5202', 900:'#523501' },
+      },
+      fontFamily: {
+        display: ['Quicksand', 'sans-serif'],
+        body:    ['Nunito', 'sans-serif'],
+      },
+      animation: {
+        'fade-in':   'fadeIn 0.4s ease both',
+        'slide-up':  'slideUp 0.4s ease both',
+        'bounce-in': 'bounceIn 0.5s cubic-bezier(.36,.07,.19,.97) both',
+        'pulse-soft':'pulseSoft 2s ease-in-out infinite',
+      },
+      keyframes: {
+        fadeIn:    { from:{ opacity:0 }, to:{ opacity:1 } },
+        slideUp:   { from:{ opacity:0, transform:'translateY(16px)' }, to:{ opacity:1, transform:'translateY(0)' } },
+        bounceIn:  { '0%':{ transform:'scale(0.8)', opacity:0 }, '60%':{ transform:'scale(1.05)' }, '100%':{ transform:'scale(1)', opacity:1 } },
+        pulseSoft: { '0%,100%':{ opacity:1 }, '50%':{ opacity:0.7 } },
+      }
+    }
+  }
+}
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: #fff8f5; min-height: 100vh; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #ffc0d5; border-radius: 4px; }
+  .page-enter-active { animation: slideUp 0.35s ease both; }
+  .star-deco { position: absolute; pointer-events: none; opacity: 0.18; }
+  .card-hover { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,60,100,0.12); }
+  .check-anim { transition: all 0.2s cubic-bezier(.36,.07,.19,.97); }
+  .progress-bar-inner { transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+  @keyframes starPop { 0%{transform:scale(0) rotate(-20deg);opacity:0} 60%{transform:scale(1.3) rotate(5deg)} 100%{transform:scale(1) rotate(0);opacity:1} }
+  .star-pop { animation: starPop 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+  .nav-shadow { box-shadow: 0 2px 16px rgba(200,60,100,0.08); }
+  .bottom-nav { box-shadow: 0 -2px 16px rgba(200,60,100,0.10); }
+  .hero-bg {
+    background: linear-gradient(135deg, #fff0f5 0%, #fde8f5 40%, #e8f0ff 100%);
+  }
+  .wavy-divider { width:100%; overflow:hidden; line-height:0; }
+  .floating { animation: floating 3s ease-in-out infinite; }
+  @keyframes floating { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .badge-glow { box-shadow: 0 0 0 3px rgba(224,68,127,0.15); }
+</style>
+</head>
+<body>
+
+<div id="app" style="max-width:430px;margin:0 auto;min-height:100vh;position:relative;background:#fff8f5;">
+
+  <!-- TOP NAV -->
+  <nav class="sticky top-0 z-30 bg-white nav-shadow px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-500 font-display font-bold text-sm">★</div>
+      <span class="font-display font-bold text-rose-600 text-base tracking-tight">E-Modul <span class="text-rose-400">BINTANG</span></span>
+    </div>
+    <div class="flex gap-1">
+      <button v-for="n in topNav" :key="n.id"
+        @click="goTo(n.id)"
+        :class="['text-xs px-3 py-1.5 rounded-full font-body font-600 transition-all duration-150',
+          current===n.id ? 'bg-rose-500 text-white' : 'text-gray-400 hover:bg-rose-50 hover:text-rose-500']">
+        {{n.label}}
+      </button>
+    </div>
+  </nav>
+
+  <!-- PAGES WRAPPER -->
+  <div class="pb-24">
+
+    <!-- ===== HOME ===== -->
+    <div v-show="current==='home'" class="animate-fade-in">
+      <!-- Hero -->
+      <div class="hero-bg px-5 pt-8 pb-10 relative overflow-hidden">
+        <div class="star-deco top-3 right-6 text-rose-300 text-5xl">✦</div>
+        <div class="star-deco top-16 left-2 text-lavender-300 text-3xl">✿</div>
+        <div class="star-deco bottom-4 right-10 text-mint-300 text-4xl">✦</div>
+        <div class="floating mb-4 flex justify-center">
+          <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-sm border border-rose-100">👩‍👧</div>
+        </div>
+        <div class="text-center">
+          <span class="inline-block bg-rose-500 text-white text-xs font-body font-700 px-4 py-1.5 rounded-full mb-3 badge-glow">★ Selamat Datang, Ibu Hebat!</span>
+          <h1 class="font-display font-bold text-2xl text-rose-700 leading-tight mb-1">E-Modul BINTANG</h1>
+          <p class="text-xs text-rose-400 font-body mb-3 leading-relaxed">Bimbingan Intervensi Tumbuh Kembang Anak</p>
+          <p class="text-sm text-gray-600 font-body leading-relaxed mb-5">Website ini membantu ibu memahami <strong class="text-rose-500">perkembangan anak</strong>, cara stimulasi sesuai usia, dan tips praktis sehari-hari.</p>
+          <div class="flex gap-3 justify-center">
+            <button @click="goTo('materi')" class="bg-rose-500 hover:bg-rose-600 text-white font-body font-700 text-sm px-5 py-2.5 rounded-full shadow transition-all active:scale-95">📚 Mulai Belajar</button>
+            <button @click="goTo('cek')" class="bg-white hover:bg-rose-50 text-rose-500 font-body font-700 text-sm px-5 py-2.5 rounded-full border-2 border-rose-200 transition-all active:scale-95">✅ Cek Perkembangan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="px-4 pt-6">
+        <h2 class="font-display font-bold text-gray-700 text-base mb-3">Website ini membantu ibu:</h2>
+        <div class="grid grid-cols-2 gap-3 mb-5">
+          <div v-for="f in features" :key="f.title" class="bg-white rounded-2xl p-4 border border-rose-50 card-hover cursor-pointer" @click="goTo(f.page)">
+            <div class="text-2xl mb-2">{{f.icon}}</div>
+            <h3 class="font-body font-700 text-sm text-gray-700 mb-1">{{f.title}}</h3>
+            <p class="font-body text-xs text-gray-400 leading-relaxed">{{f.desc}}</p>
+          </div>
+        </div>
+
+        <!-- Reminder -->
+        <div class="bg-cream-50 border border-cream-200 rounded-2xl p-4 flex gap-3 items-start mb-5">
+          <span class="text-xl flex-shrink-0 mt-0.5">🌸</span>
+          <p class="font-body text-sm text-amber-800 leading-relaxed">Tidak perlu sempurna, yang penting <strong>konsisten ya Bu!</strong> Setiap langkah kecilmu sangat berarti.</p>
+        </div>
+
+        <!-- Daily Checklist -->
+        <div class="bg-white rounded-2xl border border-rose-100 p-4 mb-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-display font-bold text-gray-700 text-base">Checklist Harian</h2>
+            <span class="text-xs text-rose-400 font-body">{{dailyDone}}/{{daily.length}} selesai</span>
+          </div>
+          <!-- progress -->
+          <div class="h-1.5 bg-rose-50 rounded-full mb-4 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-rose-400 to-pink-300 rounded-full progress-bar-inner" :style="{width: (dailyDone/daily.length*100)+'%'}"></div>
+          </div>
+          <div v-for="(d,i) in daily" :key="i" class="flex items-center gap-3 py-2.5 border-b border-rose-50 last:border-0">
+            <button @click="toggleDaily(i)" :class="['check-anim w-6 h-6 rounded-lg border-2 flex items-center justify-center text-xs font-bold flex-shrink-0',
+              d.done ? 'bg-rose-500 border-rose-500 text-white star-pop' : 'border-rose-200 bg-white text-transparent hover:border-rose-400']">✓</button>
+            <span :class="['font-body text-sm transition-all', d.done ? 'text-gray-400 line-through' : 'text-gray-600']">{{d.label}}</span>
+          </div>
+          <p v-if="dailyDone===daily.length" class="text-center text-rose-500 font-body font-bold text-sm mt-3 animate-bounce-in">🎉 Keren Bu! Semua selesai hari ini!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MATERI ===== -->
+    <div v-show="current==='materi'" class="animate-fade-in px-4 pt-6">
+      <h2 class="font-display font-bold text-gray-700 text-lg mb-1">Menu Materi</h2>
+      <p class="font-body text-sm text-gray-400 mb-4">Pilih topik yang ingin dipelajari</p>
+
+      <!-- Menu utama -->
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <button v-for="m in materiMenu" :key="m.id" @click="openMateriMenu(m.id)"
+          :class="['rounded-2xl p-4 text-left border-2 transition-all card-hover active:scale-95', m.color]">
+          <div class="text-2xl mb-2">{{m.icon}}</div>
+          <h3 class="font-body font-700 text-sm mb-0.5">{{m.title}}</h3>
+          <p class="font-body text-xs opacity-70">{{m.sub}}</p>
+        </button>
+      </div>
+
+      <!-- Modul Detail (conditional) -->
+      <div v-if="activeMateri" class="animate-slide-up">
+        <div class="flex items-center gap-2 mb-4">
+          <button @click="activeMateri=null" class="text-gray-400 hover:text-rose-500 transition-colors text-lg">←</button>
+          <h2 class="font-display font-bold text-gray-700 text-base">{{activeMateri.title}}</h2>
+        </div>
+        <div v-for="(mod, idx) in activeMateri.moduls" :key="idx" class="bg-white rounded-2xl border border-gray-100 p-4 mb-3 card-hover">
+          <div class="flex items-center gap-3 mb-3">
+            <div :class="['w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold', mod.numClass]">{{idx+1}}</div>
+            <h3 class="font-body font-700 text-sm text-gray-700">{{mod.title}}</h3>
+          </div>
+          <div v-for="sec in mod.sections" :key="sec.heading" class="mb-3">
+            <p v-if="sec.heading" class="font-body font-700 text-xs text-rose-500 uppercase tracking-wide mb-1">{{sec.heading}}</p>
+            <p v-if="sec.text" class="font-body text-sm text-gray-600 leading-relaxed mb-2">{{sec.text}}</p>
+            <ul v-if="sec.items" class="space-y-1">
+              <li v-for="it in sec.items" :key="it" class="flex items-start gap-2 font-body text-sm text-gray-600">
+                <span class="text-rose-400 flex-shrink-0 mt-0.5">•</span> {{it}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Default: list semua modul -->
+      <div v-else>
+        <h3 class="font-display font-bold text-gray-600 text-sm mb-3">Semua Modul</h3>
+        <div v-for="(mod,i) in allModuls" :key="i" class="bg-white rounded-2xl border border-gray-100 p-3.5 mb-2.5 flex items-center gap-3 card-hover cursor-pointer">
+          <div :class="['w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0', mod.numClass]">{{i+1}}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-body font-700 text-sm text-gray-700 truncate">{{mod.title}}</h4>
+            <p class="font-body text-xs text-gray-400">{{mod.sub}}</p>
+          </div>
+          <span class="text-gray-300 text-base">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CEK PERKEMBANGAN ===== -->
+    <div v-show="current==='cek'" class="animate-fade-in px-4 pt-6">
+      <h2 class="font-display font-bold text-gray-700 text-lg mb-1">Cek Perkembangan Anak</h2>
+      <p class="font-body text-sm text-gray-400 mb-4">Pilih usia anak untuk melihat checklist perkembangan</p>
+
+      <!-- Age Tabs -->
+      <div class="flex gap-2 mb-5 overflow-x-auto pb-1">
+        <button v-for="ag in ageGroups" :key="ag.id" @click="selectAge(ag.id)"
+          :class="['flex-shrink-0 px-4 py-2 rounded-full text-sm font-body font-700 border-2 transition-all active:scale-95',
+            selectedAge===ag.id ? 'bg-rose-500 border-rose-500 text-white' : 'border-rose-200 text-rose-400 hover:bg-rose-50']">
+          {{ag.label}}
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="bg-white rounded-2xl border border-rose-100 p-4 mb-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-body text-sm text-gray-600 font-600">Progress</span>
+          <span class="font-body text-sm font-bold text-rose-500">{{cekDone}}/{{cekTotal}} ✓</span>
+        </div>
+        <div class="h-2 bg-rose-50 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-rose-400 to-pink-300 rounded-full progress-bar-inner" :style="{width: cekTotal ? (cekDone/cekTotal*100)+'%' : '0%'}"></div>
+        </div>
+        <p v-if="cekDone===cekTotal && cekTotal>0" class="text-center text-rose-500 font-body font-bold text-sm mt-2 animate-bounce-in">🌟 Luar biasa Bu! Semua milestone tercapai!</p>
+      </div>
+
+      <!-- Checklist -->
+      <div class="bg-white rounded-2xl border border-rose-100 p-4 mb-4">
+        <h3 class="font-body font-700 text-sm text-gray-700 mb-3 pb-2 border-b border-rose-50">Anak sudah bisa ini belum?</h3>
+        <div v-for="(item, idx) in currentCekItems" :key="idx">
+          <div class="flex items-start gap-3 py-2.5 border-b border-rose-50 last:border-0 cursor-pointer" @click="toggleCek(idx)">
+            <div :class="['check-anim w-6 h-6 rounded-lg border-2 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5',
+              item.checked ? 'bg-mint-400 border-mint-400 text-white' : 'border-rose-200 bg-white text-transparent hover:border-rose-400']">✓</div>
+            <div class="flex-1">
+              <p :class="['font-body text-sm transition-all', item.checked ? 'text-gray-400 line-through' : 'text-gray-600']">{{item.text}}</p>
+            </div>
+          </div>
+          <!-- Saran jika belum -->
+          <div v-if="!item.checked" class="ml-9 mb-2 mt-1 bg-cream-50 border border-cream-200 rounded-xl p-2.5">
+            <p class="font-body text-xs text-amber-700 leading-relaxed">💡 <strong>Saran:</strong> {{item.saran}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TIPS HARIAN ===== -->
+    <div v-show="current==='tips'" class="animate-fade-in px-4 pt-6">
+      <h2 class="font-display font-bold text-gray-700 text-lg mb-1">Tips Harian</h2>
+      <p class="font-body text-sm text-gray-400 mb-4">Aktivitas sederhana untuk si kecil hari ini</p>
+
+      <div v-for="(tip, i) in tips" :key="i" :style="{'animation-delay': (i*0.06)+'s'}" class="animate-slide-up bg-white rounded-2xl border border-gray-100 p-4 mb-3 flex gap-3 items-start card-hover">
+        <div :class="['w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0', tip.bg]">{{tip.icon}}</div>
+        <div>
+          <span :class="['inline-block text-xs font-body font-700 px-2.5 py-0.5 rounded-full mb-1.5', tip.badge]">{{tip.cat}}</span>
+          <p class="font-body text-sm text-gray-600 leading-relaxed">{{tip.text}}</p>
+        </div>
+      </div>
+
+      <div class="bg-lavender-50 border border-lavender-100 rounded-2xl p-4 flex gap-3 items-start mt-2">
+        <span class="text-xl">💜</span>
+        <p class="font-body text-sm text-lavender-700 leading-relaxed">Tidak perlu sempurna, yang penting <strong>konsisten ya Bu!</strong></p>
+      </div>
+    </div>
+
+    <!-- ===== TENTANG ===== -->
+    <div v-show="current==='tentang'" class="animate-fade-in px-4 pt-6">
+      <div class="text-center mb-6">
+        <div class="w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center text-4xl mx-auto mb-3 floating">⭐</div>
+        <h2 class="font-display font-bold text-rose-600 text-xl mb-1">E-Modul BINTANG</h2>
+        <p class="font-body text-xs text-gray-400">Bimbingan Intervensi Tumbuh Kembang Anak</p>
+      </div>
+
+      <div v-for="sec in aboutSections" :key="sec.title" class="bg-white rounded-2xl border border-gray-100 p-4 mb-3 card-hover">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xl">{{sec.icon}}</span>
+          <h3 class="font-body font-700 text-gray-700 text-sm">{{sec.title}}</h3>
+        </div>
+        <p v-if="sec.text" class="font-body text-sm text-gray-500 leading-relaxed">{{sec.text}}</p>
+        <ul v-if="sec.items" class="space-y-1.5">
+          <li v-for="it in sec.items" :key="it" class="flex items-start gap-2 font-body text-sm text-gray-600">
+            <span class="w-5 h-5 rounded-full bg-mint-100 text-mint-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</span> {{it}}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- end pb-24 wrapper -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white flex justify-around py-2 pb-3 z-30">
+    <button v-for="bn in bottomNav" :key="bn.id" @click="goTo(bn.id)"
+      :class="['flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-all active:scale-90',
+        current===bn.id ? 'text-rose-500' : 'text-gray-300 hover:text-rose-300']">
+      <span class="text-xl leading-none">{{bn.icon}}</span>
+      <span :class="['text-xs font-body font-600', current===bn.id ? 'text-rose-500' : 'text-gray-300']">{{bn.label}}</span>
+    </button>
+  </div>
+
+</div><!-- end app -->
+
+<script>
+const { createApp, ref, computed } = Vue;
+createApp({
+  setup() {
+    const current = ref('home');
+    const activeMateri = ref(null);
+    const selectedAge = ref('6-12');
+
+    const topNav = [
+      { id:'home', label:'Home' },
+      { id:'materi', label:'Materi' },
+    ];
+    const bottomNav = [
+      { id:'home',    icon:'🏠', label:'Home' },
+      { id:'materi',  icon:'📚', label:'Materi' },
+      { id:'cek',     icon:'✅', label:'Cek' },
+      { id:'tips',    icon:'💡', label:'Tips' },
+      { id:'tentang', icon:'ℹ️', label:'Tentang' },
+    ];
+
+    const features = [
+      { icon:'👶', title:'Perkembangan Anak', desc:'Pahami tahapan tumbuh kembang si kecil', page:'materi' },
+      { icon:'🎯', title:'Stimulasi Usia',    desc:'Cara stimulasi tepat sesuai umur anak', page:'cek' },
+      { icon:'💡', title:'Tips Harian',       desc:'Tips praktis mudah dilakukan sehari-hari', page:'tips' },
+      { icon:'💪', title:'Motivasi Ibu',      desc:'Dukungan & semangat untuk ibu hebat', page:'tentang' },
+    ];
+
+    const daily = ref([
+      { label:'Saya mengajak anak bermain hari ini', done: false },
+      { label:'Saya berbicara dengan anak hari ini', done: true },
+      { label:'Saya membacakan cerita untuk anak',   done: false },
+      { label:'Saya melakukan stimulasi sesuai usia', done: false },
+    ]);
+    const dailyDone = computed(() => daily.value.filter(d=>d.done).length);
+    const toggleDaily = i => { daily.value[i].done = !daily.value[i].done; };
+
+    const materiMenu = [
+      { id:'perkembangan', icon:'🌱', title:'Perkembangan Anak',  sub:'Modul 1–3', color:'bg-mint-50 border-mint-200 text-mint-800' },
+      { id:'stimulasi',    icon:'🎮', title:'Stimulasi Anak',     sub:'Modul 4–5', color:'bg-sky-50 border-sky-200 text-sky-800' },
+      { id:'motivasi',     icon:'💖', title:'Motivasi Ibu',       sub:'Modul 6',   color:'bg-rose-50 border-rose-200 text-rose-800' },
+      { id:'emodul',       icon:'⭐', title:'E-Modul BINTANG',   sub:'Modul 7',   color:'bg-lavender-50 border-lavender-200 text-lavender-800' },
+    ];
+
+    const numClasses = [
+      'bg-rose-100 text-rose-600',
+      'bg-sky-100 text-sky-600',
+      'bg-mint-100 text-mint-600',
+      'bg-cream-100 text-amber-600',
+      'bg-lavender-100 text-lavender-600',
+      'bg-peach-100 text-peach-700',
+      'bg-rose-100 text-rose-500',
+    ];
+
+    const allModulsData = [
+      {
+        title:'Kenali Perkembangan Anak', sub:'Gerak, bicara, pikir & sosial',
+        sections:[
+          { heading:'Apa itu perkembangan anak?', text:'Perkembangan anak adalah perubahan kemampuan anak dalam berbagai aspek kehidupan.' },
+          { items:['Gerak tubuh','Bicara','Cara berpikir','Interaksi sosial'] },
+          { heading:'Masa Emas', text:'Usia 0–6 tahun adalah masa emas yang sangat penting untuk diperhatikan.' },
+          { heading:'Kenapa penting?', items:['Menentukan masa depan anak','Mencegah keterlambatan','Membantu anak lebih cerdas & mandiri'] },
+          { heading:'Peran Ibu', text:'Ibu adalah orang terdekat anak — paling sering berinteraksi dan memberi stimulasi setiap hari.' },
+        ]
+      },
+      {
+        title:'Faktor yang Mempengaruhi Anak', sub:'Internal & eksternal',
+        sections:[
+          { heading:'Faktor dari dalam', items:['Genetik','Usia','Jenis kelamin'] },
+          { heading:'Faktor dari luar', items:['Gizi','Lingkungan','Pola asuh','Stimulasi'] },
+          { heading:'Yang bisa Ibu kontrol', text:'Stimulasi di rumah adalah faktor yang paling bisa ibu kendalikan untuk perkembangan optimal anak.' },
+        ]
+      },
+      {
+        title:'Tahapan Perkembangan Anak', sub:'0–3 tahun pertama',
+        sections:[
+          { heading:'0–1 tahun', items:['Belajar duduk','Merangkak','Mengenal suara'] },
+          { heading:'1–3 tahun', items:['Belajar berjalan','Mulai bicara','Mulai bermain'] },
+          { heading:'Fakta Penting', text:'3 tahun pertama = perkembangan otak sangat cepat. Jangan lewatkan momen ini!' },
+        ]
+      },
+      {
+        title:'Apa itu Stimulasi?', sub:'Pengertian & prinsip',
+        sections:[
+          { heading:'Pengertian', text:'Stimulasi adalah rangsangan yang diberikan agar anak berkembang secara optimal.' },
+          { heading:'Contoh stimulasi', items:['Mengajak bermain','Mengajak bicara','Memberi perhatian'] },
+          { heading:'Prinsip stimulasi', items:['Setiap hari','Sesuai usia','Menyenangkan','Tidak memaksa'] },
+        ]
+      },
+      {
+        title:'Cara Stimulasi Sesuai Usia', sub:'6–36 bulan',
+        sections:[
+          { heading:'6–12 bulan', items:['Ajak tengkurap','Beri mainan','Ajak ngobrol','Main cilukba'] },
+          { heading:'12–24 bulan', items:['Belajar jalan','Susun balok','Sebut nama benda','Bermain bersama'] },
+          { heading:'24–36 bulan', items:['Berlari','Menggambar','Bercerita','Belajar mandiri'] },
+        ]
+      },
+      {
+        title:'Motivasi Ibu', sub:'Dorongan & cara meningkatkannya',
+        sections:[
+          { heading:'Apa itu motivasi?', text:'Motivasi adalah dorongan dalam diri ibu untuk merawat dan mendampingi tumbuh kembang anak.' },
+          { heading:'Kenapa penting?', items:['Lebih rajin memberikan stimulasi','Lebih peduli perkembangan anak'] },
+          { heading:'Cara meningkatkan motivasi', items:['Banyak belajar','Cari informasi terpercaya','Dukungan keluarga'] },
+        ]
+      },
+      {
+        title:'Tentang E-Modul BINTANG', sub:'Panduan digital untuk ibu',
+        sections:[
+          { heading:'Apa itu?', text:'Panduan digital untuk ibu tentang perkembangan anak, cara stimulasi, dan tips praktis sehari-hari.' },
+          { heading:'Tujuan', items:['Membantu ibu memahami anak','Meningkatkan motivasi ibu','Mencegah keterlambatan tumbuh kembang'] },
+          { heading:'Kelebihan', items:['Bisa dibuka kapan saja','Mudah dipahami','Praktis & interaktif'] },
+        ]
+      },
+    ];
+
+    const allModuls = allModulsData.map((m, i) => ({ ...m, numClass: numClasses[i] }));
+
+    const materiMenuMap = {
+      perkembangan: { title:'Perkembangan Anak', moduls: allModuls.slice(0,3).map((m,i)=>({...m, numClass: numClasses[i]})) },
+      stimulasi:    { title:'Stimulasi Anak',     moduls: allModuls.slice(3,5).map((m,i)=>({...m, numClass: numClasses[i+3]})) },
+      motivasi:     { title:'Motivasi Ibu',        moduls: allModuls.slice(5,6).map((m,i)=>({...m, numClass: numClasses[i+5]})) },
+      emodul:       { title:'E-Modul BINTANG',    moduls: allModuls.slice(6,7).map((m,i)=>({...m, numClass: numClasses[i+6]})) },
+    };
+
+    const openMateriMenu = id => { activeMateri.value = materiMenuMap[id]; };
+
+    const ageGroups = [
+      { id:'6-12',  label:'6–12 bulan' },
+      { id:'12-24', label:'12–24 bulan' },
+      { id:'24-36', label:'24–36 bulan' },
+    ];
+
+    const cekData = {
+      '6-12': [
+        { text:'Bisa tengkurap & mengangkat kepala',    saran:'Ajak latihan tummy time setiap hari 10–15 menit di permukaan yang aman.', checked:false },
+        { text:'Merespon ketika namanya dipanggil',     saran:'Sering panggil nama anak dengan nada ceria — buat menjadi permainan seru!', checked:false },
+        { text:'Bisa duduk dengan bantuan',             saran:'Bantu posisi duduk menggunakan bantal pendukung setiap hari secara bertahap.', checked:false },
+        { text:'Mengoceh / mengeluarkan suara',         saran:'Ajak ngobrol dan tiru suara yang ia keluarkan — ini merangsang kemampuan bahasa.', checked:false },
+        { text:'Tertarik & menjangkau mainan',          saran:'Gantungkan mainan warna cerah di depannya dan gerakkan perlahan agar ia menjangkau.', checked:false },
+      ],
+      '12-24': [
+        { text:'Bisa berjalan sendiri',                 saran:'Beri ruang aman untuk berlatih, pegang tangan anak & puji setiap langkahnya!', checked:false },
+        { text:'Bisa mengatakan 5–10 kata',             saran:'Bacakan buku bergambar dan tunjuk benda sambil menyebut namanya setiap hari.', checked:false },
+        { text:'Bisa menyusun 2 balok',                 saran:'Bermain susun balok bersama dan puji setiap usaha yang ia lakukan.', checked:false },
+        { text:'Mengenal anggota keluarga',             saran:'Tunjukkan foto keluarga dan sebut nama mereka berulang-ulang dengan ceria.', checked:false },
+        { text:'Bisa bermain sendiri sebentar',         saran:'Sediakan sudut bermain aman dan beri mainan yang sesuai usia anak.', checked:false },
+      ],
+      '24-36': [
+        { text:'Bisa berlari dan melompat',             saran:'Ajak bermain di luar ruangan setiap hari minimal 30 menit untuk motorik kasarnya.', checked:false },
+        { text:'Bisa bicara dalam kalimat pendek',      saran:'Ajak bercerita sederhana setiap malam sebelum tidur — ini memperkaya kosakata.', checked:false },
+        { text:'Bisa menggambar coretan',               saran:'Sediakan kertas & crayon, beri kebebasan berekspresi tanpa dibatasi.', checked:false },
+        { text:'Bisa makan sendiri dengan sendok',      saran:'Biarkan anak makan sendiri meski berantakan — ini penting untuk kemandirian!', checked:false },
+        { text:'Bermain bersama anak lain',             saran:'Ajak ke taman bermain atau pertemukan dengan teman sebaya secara rutin.', checked:false },
+      ]
+    };
+
+    const cekState = ref({
+      '6-12':  cekData['6-12'].map(d=>({...d})),
+      '12-24': cekData['12-24'].map(d=>({...d})),
+      '24-36': cekData['24-36'].map(d=>({...d})),
+    });
+
+    const currentCekItems = computed(() => cekState.value[selectedAge.value]);
+    const cekDone  = computed(() => currentCekItems.value.filter(i=>i.checked).length);
+    const cekTotal = computed(() => currentCekItems.value.length);
+
+    const selectAge = id => { selectedAge.value = id; };
+    const toggleCek = idx => { cekState.value[selectedAge.value][idx].checked = !cekState.value[selectedAge.value][idx].checked; };
+
+    const tips = [
+      { icon:'💬', cat:'Bahasa', bg:'bg-sky-100',      badge:'bg-sky-100 text-sky-700',       text:'Hari ini ajak anak ngobrol 10 menit ya, Bu! Ceritakan apa yang ada di sekitar kalian.' },
+      { icon:'🙈', cat:'Kognitif', bg:'bg-rose-100',   badge:'bg-rose-100 text-rose-700',     text:'Coba bermain cilukba hari ini — si kecil pasti senang dan otaknya aktif belajar!' },
+      { icon:'🛁', cat:'Bahasa', bg:'bg-mint-100',     badge:'bg-mint-100 text-mint-700',     text:'Saat mandi, sebut nama anggota tubuh si kecil — ini bantu kemampuan bahasanya.' },
+      { icon:'📖', cat:'Kognitif', bg:'bg-cream-100',  badge:'bg-amber-100 text-amber-700',   text:'Ajak anak melihat gambar di buku dan tanya "ini apa?" untuk merangsang rasa ingin tahunya.' },
+      { icon:'🌟', cat:'Emosi', bg:'bg-lavender-100',  badge:'bg-lavender-100 text-lavender-700', text:'Puji usaha anak, bukan hanya hasilnya. "Wah, kamu sudah coba!" lebih bermakna dari "Pintar!"' },
+      { icon:'🎵', cat:'Sensorik', bg:'bg-peach-100',  badge:'bg-orange-100 text-orange-700', text:'Nyanyikan lagu sederhana bersama anak — musik merangsang perkembangan otak dan emosi si kecil.' },
+      { icon:'🧩', cat:'Motorik', bg:'bg-sky-100',     badge:'bg-sky-100 text-sky-700',       text:'Susun puzzle sederhana bersama anak — melatih konsentrasi dan kemampuan memecahkan masalah.' },
+      { icon:'🌿', cat:'Alam', bg:'bg-mint-100',       badge:'bg-mint-100 text-mint-700',     text:'Ajak anak melihat tanaman & bunga di luar — kenalkan warna dan tekstur secara langsung.' },
+    ];
+
+    const aboutSections = [
+      { icon:'📖', title:'Tentang E-Modul BINTANG', text:'E-Modul BINTANG adalah panduan digital yang dirancang khusus untuk ibu dalam mendampingi tumbuh kembang anak usia 0–3 tahun dengan cara yang menyenangkan dan mudah dipahami.' },
+      { icon:'🎯', title:'Tujuan', items:['Membantu ibu memahami perkembangan anak secara holistik','Meningkatkan motivasi ibu dalam memberikan stimulasi','Mencegah keterlambatan tumbuh kembang sejak dini'] },
+      { icon:'✨', title:'Kelebihan', items:['Bisa dibuka kapan saja & di mana saja','Mudah dipahami oleh semua ibu','Praktis & interaktif','Dilengkapi checklist perkembangan','Saran stimulasi otomatis'] },
+      { icon:'👩‍🔬', title:'Peneliti', text:'E-Modul ini dikembangkan sebagai media edukasi berbasis digital untuk mendukung program kesehatan anak dan ibu di Indonesia, dengan pendekatan yang ramah dan berpusat pada keluarga.' },
+    ];
+
+    const goTo = id => {
+      current.value = id;
+      if (id !== 'materi') activeMateri.value = null;
+      window.scrollTo({ top: 0, behavior:'smooth' });
+    };
+
+    return {
+      current, topNav, bottomNav, features,
+      daily, dailyDone, toggleDaily,
+      materiMenu, activeMateri, openMateriMenu, allModuls,
+      ageGroups, selectedAge, selectAge,
+      currentCekItems, cekDone, cekTotal, toggleCek,
+      tips, aboutSections, goTo,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
