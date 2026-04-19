@@ -70,7 +70,9 @@ tailwind.config = {
   <!-- TOP NAV -->
   <nav class="sticky top-0 z-30 bg-white nav-shadow px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-500 font-display font-bold text-sm">★</div>
+      <div class=" rounded-full bg-rose-100 flex items-center justify-center text-rose-500 font-bold text-sm">
+        <img src="img/universitas.png" class="w-8 h-8">
+      </div>
       <span class="font-display font-bold text-rose-600 text-base tracking-tight">E-Modul <span class="text-rose-400">BINTANG</span></span>
     </div>
     <div class="flex gap-1">
@@ -94,7 +96,9 @@ tailwind.config = {
         <div class="star-deco top-16 left-2 text-lavender-300 text-3xl">✿</div>
         <div class="star-deco bottom-4 right-10 text-mint-300 text-4xl">✦</div>
         <div class="floating mb-4 flex justify-center">
-          <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-sm border border-rose-100">👩‍👧</div>
+          <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-sm border border-rose-100">
+            <img class="w-20 h-20 rounded-full" src="img/modul.jpg">
+          </div>
         </div>
         <div class="text-center">
           <span class="inline-block bg-rose-500 text-white text-xs font-body font-700 px-4 py-1.5 rounded-full mb-3 badge-glow">★ Selamat Datang, Ibu Hebat!</span>
@@ -173,7 +177,7 @@ tailwind.config = {
           </div>
           <div v-for="sec in mod.sections" :key="sec.heading" class="mb-3">
             <p v-if="sec.heading" class="font-body font-700 text-xs text-rose-500 uppercase tracking-wide mb-1">{{sec.heading}}</p>
-            <p v-if="sec.text" class="font-body text-sm text-gray-600 leading-relaxed mb-2">{{sec.text}}</p>
+            <p v-if="sec.text" class="font-body text-sm text-gray-600 leading-relaxed mb-2" v-html="sec.text" />
             <ul v-if="sec.items" class="space-y-1">
               <li v-for="it in sec.items" :key="it" class="flex items-start gap-2 font-body text-sm text-gray-600">
                 <span class="text-rose-400 flex-shrink-0 mt-0.5">•</span> {{it}}
@@ -264,7 +268,9 @@ tailwind.config = {
     <!-- ===== TENTANG ===== -->
     <div v-show="current==='tentang'" class="animate-fade-in px-4 pt-6">
       <div class="text-center mb-6">
-        <div class="w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center text-4xl mx-auto mb-3 floating">⭐</div>
+        <div class="w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center text-4xl mx-auto mb-3 floating">
+          <img class="w-20 h-20 rounded-full" src="img/modul.jpg">
+        </div>
         <h2 class="font-display font-bold text-rose-600 text-xl mb-1">E-Modul BINTANG</h2>
         <p class="font-body text-xs text-gray-400">Bimbingan Intervensi Tumbuh Kembang Anak</p>
       </div>
@@ -381,6 +387,7 @@ createApp({
         title:'Apa itu Stimulasi?', sub:'Pengertian & prinsip',
         sections:[
           { heading:'Pengertian', text:'Stimulasi adalah rangsangan yang diberikan agar anak berkembang secara optimal.' },
+          { heading:'Video Materi', text:'<iframe width="100%" height="315" src="https://www.youtube.com/embed/iZsZkx12HIA?si=9TJKOJbyxl7AMn6h" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>' },
           { heading:'Contoh stimulasi', items:['Mengajak bermain','Mengajak bicara','Memberi perhatian'] },
           { heading:'Prinsip stimulasi', items:['Setiap hari','Sesuai usia','Menyenangkan','Tidak memaksa'] },
         ]
@@ -480,7 +487,11 @@ createApp({
       { icon:'📖', title:'Tentang E-Modul BINTANG', text:'E-Modul BINTANG adalah panduan digital yang dirancang khusus untuk ibu dalam mendampingi tumbuh kembang anak usia 0–3 tahun dengan cara yang menyenangkan dan mudah dipahami.' },
       { icon:'🎯', title:'Tujuan', items:['Membantu ibu memahami perkembangan anak secara holistik','Meningkatkan motivasi ibu dalam memberikan stimulasi','Mencegah keterlambatan tumbuh kembang sejak dini'] },
       { icon:'✨', title:'Kelebihan', items:['Bisa dibuka kapan saja & di mana saja','Mudah dipahami oleh semua ibu','Praktis & interaktif','Dilengkapi checklist perkembangan','Saran stimulasi otomatis'] },
-      { icon:'👩‍🔬', title:'Peneliti', text:'E-Modul ini dikembangkan sebagai media edukasi berbasis digital untuk mendukung program kesehatan anak dan ibu di Indonesia, dengan pendekatan yang ramah dan berpusat pada keluarga.' },
+      { icon:'👩‍🔬', title:'Peneliti', items:[
+        'Margaretha Rustiana Aritonang (220211043)',
+        'Mesrawati Waruwu (220211016)',
+        'Queen Daniela QM (220211018)'
+      ]},
     ];
 
     const goTo = id => {
