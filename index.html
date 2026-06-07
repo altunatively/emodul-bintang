@@ -183,6 +183,49 @@ tailwind.config = {
                 <span class="text-rose-400 flex-shrink-0 mt-0.5">•</span> {{it}}
               </li>
             </ul>
+            <div
+                    v-if="sec.activities"
+                    class="space-y-4"
+            >
+              <div
+                      v-for="act in sec.activities"
+                      :key="act.title"
+                      class="bg-rose-50 border border-rose-100 rounded-2xl p-4"
+              >
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="text-2xl">{{ act.icon }}</span>
+                  <h4 class="font-body font-700 text-sm text-gray-700">
+                    {{ act.title }}
+                  </h4>
+                </div>
+
+                <div class="mb-3">
+                  <p class="font-body font-700 text-xs text-rose-500 uppercase mb-1">
+                    Cara Melakukannya
+                  </p>
+                  <p class="font-body text-sm text-gray-600 leading-relaxed">
+                    {{ act.cara }}
+                  </p>
+                </div>
+
+                <div>
+                  <p class="font-body font-700 text-xs text-mint-600 uppercase mb-1">
+                    Manfaat
+                  </p>
+
+                  <ul class="space-y-1">
+                    <li
+                            v-for="m in act.manfaat"
+                            :key="m"
+                            class="flex items-start gap-2 text-sm text-gray-600"
+                    >
+                      <span class="text-mint-500">✓</span>
+                      <span>{{ m }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -327,7 +370,6 @@ createApp({
       { icon:'👶', title:'Perkembangan Anak', desc:'Pahami tahapan tumbuh kembang si kecil', page:'materi' },
       { icon:'🎯', title:'Stimulasi Usia',    desc:'Cara stimulasi tepat sesuai umur anak', page:'cek' },
       { icon:'💡', title:'Tips Harian',       desc:'Tips praktis mudah dilakukan sehari-hari', page:'tips' },
-      { icon:'💪', title:'Motivasi Ibu',      desc:'Dukungan & semangat untuk ibu hebat', page:'tentang' },
     ];
 
     const daily = ref([
@@ -342,8 +384,7 @@ createApp({
     const materiMenu = [
       { id:'perkembangan', icon:'🌱', title:'Perkembangan Anak',  sub:'Modul 1–3', color:'bg-mint-50 border-mint-200 text-mint-800' },
       { id:'stimulasi',    icon:'🎮', title:'Stimulasi Anak',     sub:'Modul 4–5', color:'bg-sky-50 border-sky-200 text-sky-800' },
-      { id:'motivasi',     icon:'💖', title:'Motivasi Ibu',       sub:'Modul 6',   color:'bg-rose-50 border-rose-200 text-rose-800' },
-      { id:'emodul',       icon:'⭐', title:'E-Modul BINTANG',   sub:'Modul 7',   color:'bg-lavender-50 border-lavender-200 text-lavender-800' },
+      { id:'emodul',       icon:'⭐', title:'E-Modul BINTANG',   sub:'Modul 6',   color:'bg-lavender-50 border-lavender-200 text-lavender-800' },
     ];
 
     const numClasses = [
@@ -393,19 +434,144 @@ createApp({
         ]
       },
       {
-        title:'Cara Stimulasi Sesuai Usia', sub:'6–36 bulan',
+        title:'Cara Stimulasi Sesuai Usia',
+        sub:'6–36 bulan',
         sections:[
-          { heading:'6–12 bulan', items:['Ajak tengkurap','Beri mainan','Ajak ngobrol','Main cilukba'] },
-          { heading:'12–24 bulan', items:['Belajar jalan','Susun balok','Sebut nama benda','Bermain bersama'] },
-          { heading:'24–36 bulan', items:['Berlari','Menggambar','Bercerita','Belajar mandiri'] },
-        ]
-      },
-      {
-        title:'Motivasi Ibu', sub:'Dorongan & cara meningkatkannya',
-        sections:[
-          { heading:'Apa itu motivasi?', text:'Motivasi adalah dorongan dalam diri ibu untuk merawat dan mendampingi tumbuh kembang anak.' },
-          { heading:'Kenapa penting?', items:['Lebih rajin memberikan stimulasi','Lebih peduli perkembangan anak'] },
-          { heading:'Cara meningkatkan motivasi', items:['Banyak belajar','Cari informasi terpercaya','Dukungan keluarga'] },
+          {
+            heading:'Usia 6–12 Bulan',
+            activities:[
+              {
+                icon:'👶',
+                title:'Ajak Tengkurap',
+                cara:'Letakkan anak dalam posisi tengkurap di atas alas yang aman dan bersih. Letakkan mainan di depan anak agar ia berusaha mengangkat kepala, menopang tubuh dengan kedua tangan, dan bergerak meraih mainan.',
+                manfaat:[
+                  'Menguatkan otot leher',
+                  'Menguatkan punggung dan bahu',
+                  'Melatih koordinasi gerak'
+                ]
+              },
+              {
+                icon:'🧸',
+                title:'Beri Mainan',
+                cara:'Berikan mainan yang aman, berwarna cerah, dan mudah digenggam seperti kerincingan atau bola lunak.',
+                manfaat:[
+                  'Melatih koordinasi mata dan tangan',
+                  'Melatih kemampuan menggenggam',
+                  'Merangsang rasa ingin tahu'
+                ]
+              },
+              {
+                icon:'💬',
+                title:'Ajak Ngobrol',
+                cara:'Sering berbicara dengan anak saat bermain, makan, atau memandikannya. Sebutkan nama benda dan respons suara yang dikeluarkan anak.',
+                manfaat:[
+                  'Merangsang perkembangan bahasa',
+                  'Meningkatkan komunikasi',
+                  'Mempererat ikatan dengan orang tua'
+                ]
+              },
+              {
+                icon:'🙈',
+                title:'Main Cilukba',
+                cara:'Tutupi wajah dengan tangan atau kain tipis, kemudian buka sambil tersenyum dan menyebut nama anak.',
+                manfaat:[
+                  'Melatih perhatian',
+                  'Melatih interaksi sosial',
+                  'Membantu mengenali orang'
+                ]
+              }
+            ]
+          },
+          {
+            heading:'Usia 12–24 Bulan',
+            activities:[
+              {
+                icon:'🚶',
+                title:'Belajar Jalan',
+                cara:'Berikan kesempatan kepada anak untuk berdiri dan berjalan dengan berpegangan pada benda yang kokoh atau tangan orang tua. Dampingi anak saat mencoba melangkah agar merasa aman dan percaya diri.',
+                manfaat:[
+                  'Melatih keseimbangan tubuh',
+                  'Menguatkan otot tungkai',
+                  'Meningkatkan kepercayaan diri'
+                ]
+              },
+              {
+                icon:'🧱',
+                title:'Susun Balok',
+                cara:'Ajak anak menyusun balok atau benda sejenis menjadi menara sederhana. Tunjukkan cara menyusun satu per satu dan biarkan anak mencoba sendiri.',
+                manfaat:[
+                  'Melatih koordinasi tangan dan mata',
+                  'Meningkatkan konsentrasi',
+                  'Mengembangkan kemampuan memecahkan masalah'
+                ]
+              },
+              {
+                icon:'🏠',
+                title:'Sebut Nama Benda',
+                cara:'Tunjukkan benda-benda di sekitar rumah kemudian sebutkan namanya dengan jelas. Minta anak menunjuk atau mengulangi nama benda tersebut.',
+                manfaat:[
+                  'Menambah kosakata',
+                  'Meningkatkan kemampuan bahasa',
+                  'Melatih daya ingat'
+                ]
+              },
+              {
+                icon:'🤝',
+                title:'Bermain Bersama',
+                cara:'Libatkan anak dalam permainan sederhana bersama anggota keluarga atau teman sebaya. Berikan kesempatan untuk berinteraksi dan bermain bergantian.',
+                manfaat:[
+                  'Melatih kemampuan sosial',
+                  'Mengajarkan berbagi',
+                  'Meningkatkan interaksi dengan orang lain'
+                ]
+              }
+            ]
+          },
+          {
+            heading:'Usia 24–36 Bulan',
+            activities:[
+              {
+                icon:'🏃',
+                title:'Berlari',
+                cara:'Ajak anak berlari di area yang aman dan datar, misalnya mengejar bola atau mengikuti orang tua. Pastikan lingkungan bebas dari benda berbahaya.',
+                manfaat:[
+                  'Melatih keseimbangan',
+                  'Menguatkan otot besar',
+                  'Meningkatkan koordinasi tubuh'
+                ]
+              },
+              {
+                icon:'🎨',
+                title:'Menggambar',
+                cara:'Sediakan kertas dan krayon, lalu biarkan anak membuat coretan atau gambar sederhana sesuai imajinasinya.',
+                manfaat:[
+                  'Melatih motorik halus',
+                  'Mengembangkan kreativitas',
+                  'Melatih koordinasi mata dan tangan'
+                ]
+              },
+              {
+                icon:'📖',
+                title:'Bercerita',
+                cara:'Bacakan cerita bergambar atau ceritakan kegiatan sehari-hari dengan bahasa sederhana. Ajak anak menjawab pertanyaan sederhana tentang cerita.',
+                manfaat:[
+                  'Menambah kosakata',
+                  'Melatih kemampuan berbicara',
+                  'Meningkatkan daya ingat dan imajinasi'
+                ]
+              },
+              {
+                icon:'🌟',
+                title:'Belajar Mandiri',
+                cara:'Biasakan anak melakukan aktivitas sederhana sendiri, seperti makan menggunakan sendok, memakai sandal, atau merapikan mainan. Berikan pujian saat anak berhasil melakukannya.',
+                manfaat:[
+                  'Meningkatkan rasa percaya diri',
+                  'Melatih kemandirian',
+                  'Membentuk kebiasaan positif'
+                ]
+              }
+            ]
+          }
         ]
       },
       {
